@@ -158,4 +158,117 @@ public class UserDao {
   - java 는 다중 상속을 허용하고 있지 않기 때문
 - 슈퍼 클래스에 수정 사항이 생기면 서브 클래스도 따라 수정해야함
 - 확장된 `getConnection()` 메서드를 다른 DAO 클래스에 적용할 수 없다 
-  - DAO 클래스마다 `getConnection()` 메서드를 중복으로 생성하게 해야한다 
+  - DAO 클래스마다 `getConnection()` 메서드를 중복으로 생성하게 해야한리 
+
+## 관심사에 따른 클래스 분리
+
+앞에서 관심사 분리를 다음과 같은 방법으로 진행했다.
+- 독립된 메서드로 분리
+- 상하위 클래스로 분리
+
+이번에는 상속관계도 아닌 완전한 독립적인 클래스로 분리해보고자 한다. DB 커넥션 부분을 서브 클래스가 아닌, 별도의 클래스로 분리한다. 그걸 UserDao가 이용하게 하는 방식.
+
+### SimpleConnectionMaker
+
+`SimpleConnectionMaker` 라는 클래스를 만들고 DB 생성 기능을 넣어준다. 
+- `add()`, `get()` 메서드에서 사용한다.
+- 각각의 메서드에서 `SimpleConnectionMaker` 오브젝트를 만들수도 있지만
+  - 한 번만 `SimpleConnectionMaker` 오브젝트를 만들고 저장, 사용하게 한다
+
+```java
+public class UserDao {
+
+  private SimpleConnectionMaker simpleConnectionMaker;
+
+  public UserDao() {
+    simpleConnectionMaker = new SimpleConnectionMaker();
+  }
+  
+  public void add() {
+      Connection c = simpleConnectionMaker.makeNewConnection();
+      // ...
+  }
+
+  public User get() {
+    Connection c = simpleConnectionMaker.makeNewConnection();
+    // ...
+  }
+}
+```
+
+```java
+public class SimpleConnectionMaker {
+    public Connection makeNewConnection() {
+        Connection c;
+        
+        // DB 커넥션 생성 로직
+      
+        return c;
+    }
+}
+```
+
+위와 같이 DB 연결과 관심사를 클래스로 분리하여 UserDao 에서 `SimpleConnectionMaker` 의 오브젝트를 생성하여 사용하고 있다.
+- `UserDao` 는 `SimpleConnectionMaker` 에 종속적이게 됐다
+  - 상속 관계로 이뤄졌을 때처럼 `UserDao` 코드의 수정 없이 DB 커넥션 생성 기능을 변경할 수 없다
+  - `UserDao` 의 소스 코드를 함께 제공하지 않으면 DB 연결 방법을 바꿀 수 없게 됐다
+    - 다른 DB를 연결하고자 하면 `UserDao` 에서 아래의 소스 코드를 수정해야한다 
+    - `simpleConnectionMaker = new SimpleConnectionMaker()` 
+  - 마찬가지로 `add()` `get()` 메서드에서 DB 커넥션 코드를 일일히 변경해야하고, 메서드가 많아지면 작업의 양도 그만큼 많아지게 된다
+
+또한 DB 커넥션을 제공하는 클래스가 어떤 것인지 `UserDao` 가 구체적으로 알고있어야 한다.
+
+## 인터페이스를 이용하여 느슨한 연결고리 만들기
+
+클래스를 분리하면서 생긴 문제를 해결할 방법은
+- 두 개의 클래스가 직접적으로 연결되지 않고, 추상적인 느슨한 연결고리를 통해 연결하도록 한다
+
+`추상화` 란
+- 어떤 것들의 공통적인 성격을 뽑아내 이를 따로 분리해내는 작업
+- `Java` 는 추상화를 위해 `인터페이스`를 제공
+
+`인터페이스` 는
+- 자신을 구현한 클래스에 대한 구체적인 정보를 감춘다
+- 인터페이스로 추상화해놓은 통로를 통해 접근하게 되면 오브젝트를 만들 때 사용할 클래스가 뭔지 몰라도 된다
+- 인터페이스를 통해 접근하면 실제 구현 클래스를 바꿔도 신경쓰지 않아도 됨
+
+![img.png](img.png)
+
+```java
+public interface ConnectionMaker {
+    
+    Connection makeConnection();
+    
+}
+```
+
+- `ConnectionMaker` 라는 인터페이스를 정의
+  - 인터페이스 내부에는 DB 커넥션을 가져오는 메서드 `Connection` 타입을 반환하는 `makeConnection()` 메서드 정의
+- `UserDao` 는 `ConnectionMaker` 인터페이스 타입만 알고 있다
+  - 어떤 구현체(클래스)인지 상관 없이 `makeConnection()` 메서드를 호출하면 `Connection` 타입의 오브젝트를 만들어서 돌려줄 것이라고 기대하게 됨 
+
+```java
+public class UserDao { 
+    
+    private ConnectionMaker connectionMaker;
+    
+    public UserDao() {
+        connectionMaker = new AConnectionMaker();
+    }
+    
+    public void add() {
+        Connection c = connectionMaker.makeConnection();
+        // ...
+    }
+
+    public User get() {
+        Connection c = connectionMaker.makeConnection();
+        // ...
+    }
+}
+```
+
+`UserDao` 의 `add()` `get()` 메서드와 필드에는 `ConnectionMaker` 라는 인터페이스와 인터페이스 메서드인 `makeConnection()` 만 사용하고 있다. <br>
+하지만 여전히 `AConnectionMaker` 클래스를 생성자에서 호출해서 오브젝트를 생성하고 있다.
+- 인터페이스를 이용해서 DB 연결하는 구체적인 정보는 제거했지만, 어떠한 오브젝트를 사용할지를 결정하는 생성자 코드는 남아있다
+- 필요할 때마다 `UserDao` 의 생성자 메서드를 직접 수정하지 않고는 자유로운 DB 커넥션 확장은 불가능한 상태
