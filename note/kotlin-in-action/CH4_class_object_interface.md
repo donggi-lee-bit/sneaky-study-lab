@@ -68,3 +68,47 @@
     - 이후 새로운 하위 클래스를 추가되면 `when` 식을 고쳐야 정상 작동
 
       → 버그를 예방할 수 있게 됨
+
+<br></br>
+
+## 4.2 뻔하지 않은 생성자와 프로퍼티를 갖는 클래스 선언
+
+- **코틀린의 생성자**
+  - 주 생성자 (primary): 클래스를 초기화할 때 사용하는 간략한 생성자, 클래스 본문 밖에 정의
+  - 부 생성자 (secondary): 클래스 본문 안에 정의
+  - 초기화 블록 (initializer block)
+
+### 4.2.1 클래스 초기화: 주 생성자와 초기화 블록
+
+```kotlin
+class User(val nickname: String)
+```
+
+- 클래스 이름 뒤에 오는 괄호로 둘러싸인 코드를 `주(primary) 생성자`
+- 정의 목적
+  1. 생성자 파라미터 지정
+  2. 생성자 파라미터에 의해 초기화되는 프로퍼티 정의
+
+```kotlin
+// 1.
+class User constructor(_nickname: String) {
+    val nickname: String
+    
+    init {
+        nickname = _nickname
+    }
+    // val nickname: String = _nickname 와 같이 선언하여 init 키워드 생략 가능
+}
+
+// 2. 생성자 파라미터 이름 앞에 val을 추가하면 프로퍼티 정의와 초기화를 간략히 할 수 있음
+class User(val nickname: String)
+
+// 3. 생성자 파라미터 디폴트 값 정의
+class User(val nickname: String = "hello")
+```
+
+- `constructor` 키워드
+  - 주 생성자, 부 생성자 정의 시 사용
+  - 주 생성자 앞에 별도의 애너테이션이나 가시성 변경자가 없으면 생략 가능
+- `init` 키워드
+  - 클래스의 객체가 만들어질때 실행될 초기화 코드가 들어감
