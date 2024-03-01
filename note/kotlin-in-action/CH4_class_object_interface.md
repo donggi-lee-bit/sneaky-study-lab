@@ -130,5 +130,53 @@ class User(val nickname: String = "hello")
     - 상위 클래스, 인터페이스 목록에서 이름 뒤 괄호 유무를 통해 기반 클래스와 인터페이스를 쉽게 구별 가능
 - **private 생성자**
   - 클래스를 클래스 외부에서 인스턴스화하지 못하게 막고 싶다면 생성자를 `private` 으로 생성
+    
+    → private 생성자 호출이 좋은 이유에 대한 설명 `4.4.2 동반 객체: 팩토리 메서드와 정적 멤버가 들어갈 장소`
+    
+## object 키워드: 클래스 선언과 인스턴스 생성
 
-    → private 생성자 호출이 좋은 이유에 대한 설명 `챕터 4.4.2`
+### 4.4.2 동반 객체: 팩토리 메서드와 정적 멤버가 들어갈 장소
+
+- **코틀린의 정적 멤버**
+  - 코틀린 클래스 안에는 정적인 멤버가 없음 (`static` 지원 X)
+  - static 키워드 대신 패키지 수준의 최상위 함수와 객체 선언을 활용 (최상위 함수 사용을 더 권장)
+  - 최상위 함수는 `private` 으로 표시된 클래스 비공개 멤버에 접근할 수 없음
+- **코틀린 동반 객체**
+  - 클래스 안에 정의된 객체 중 `companion` 표시를 붙이면 그 클래스의 동반 객체로 만들 수 있음
+  - 동반 객체의 프로퍼티나 메서드에 접근하기 위해선 객체가 정의된 클래스 이름을 사용해야함 (자바의 정적 메서드 호출과 같음)
+  ```kotlin
+  class A {
+    companion object {
+        fun bar() {
+            println("hello world")
+        }
+    }
+  }
+  
+  >> A.bar()
+  hello world
+  ```
+- **private 생성자와 동반 객체**
+  - 동반 객체는 정의된 클래스의 모든 `private` 멤버에 접근 가능 (private 생성자 호출 가능)
+    ```kotlin
+    class A private constructor(
+        private val nickname: String
+    ) {
+        fun getNickname(): String {
+          return this.nickname
+        }
+        
+        companion object { 
+            fun of(nickname: String): A {
+                    return A(nickname = nickname)
+            }
+        }
+    }
+    
+    fun main() {
+    val nickname = "Hello World"
+    val a = A.of(nickname)
+    println(a.getNickname())
+
+    ```
+  - 
