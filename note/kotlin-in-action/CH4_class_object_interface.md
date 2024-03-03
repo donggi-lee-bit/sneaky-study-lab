@@ -179,4 +179,57 @@ class User(val nickname: String = "hello")
     println(a.getNickname())
 
     ```
-  - 
+
+### 4.4.3 동반 객체를 일반 객체처럼 사용
+
+- **일반 객체처럼 사용 가능한 동반 객체**
+  - 1.동반 객체에 이름 붙이기
+    ```kotlin
+    class Person(val name: String) {
+      companion object Loader {
+        fun fromJSON(jsonText: String): Person = ...
+      }
+    }
+
+    // 동반 객체에 이름 명시한 경우 사용 예시
+    >>> person = Person.Loader.fromJSON("")
+    >>> person2 = Person.fromJSON("") // 동반 객체에 명시한 이름을 호출하지 않아도 fromJSON() 호출 가능
+    ```
+  - 2.동반 객체에서 인터페이스 구현
+    - 다양한 타입의 객체를 동일한 방식으로 생성해야할 때 인터페이스를 활용할 수 있음
+    ```kotlin
+    interface JSONFactory<T> {
+      fun fromJSON(jsonText: String): T
+    }
+
+    // 동반 객체에서 인터페이스를 구현
+    class Person(val name: String) {
+      companion object : JSONFactory<Person> {
+        override fun fromJSON(jsonText: String): Person = ...
+      }
+    }
+    ```
+  - 3.동반 객체 확장
+    - 동반 객체 안의 함수를 확장 함수로 만들어 관심사를 분리할 수 있음
+    - 동반 객체에 대한 확장 함수 정의 시 원래 클래스에 빈 객체라도 동반 객체 선언이 필요함
+    ```kotlin
+    // 비즈니스 로직 모듈
+    class Person(val firstName: String, val lastName: String) {
+      companion object { // 비어있는 동반 객체 선언
+
+      }
+    }
+
+    // 확장 함수 선언
+    fun Person.Companion.fromJSON(json: String): Person {
+
+    }
+
+    // 동반 객체에 대한 확장 함수 호출 예시
+    val p = Person.fromJSON(json)
+    ```
+  - 자바에서 코틀린 동반 객체 호출
+    ```Java
+    // 동반 객체에 이름을 붙이지 않았다면 자바에서 Companion 이름으로 참조에 접근 가능
+    Person.Companion.fromJSON("...");
+    ```
