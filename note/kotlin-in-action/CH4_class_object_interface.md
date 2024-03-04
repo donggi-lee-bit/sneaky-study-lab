@@ -133,7 +133,32 @@ class User(val nickname: String = "hello")
     
     → private 생성자 호출이 좋은 이유에 대한 설명 `4.4.2 동반 객체: 팩토리 메서드와 정적 멤버가 들어갈 장소`
     
-## object 키워드: 클래스 선언과 인스턴스 생성
+## 4.4 object 키워드: 클래스 선언과 인스턴스 생성
+
+- **코틀린의 object 키워드**
+  - 클래스를 정의함과 동시에 인스턴스를 생성
+- **object 키워드를 사용하는 상황**
+  - 객체 선언(object declaration)
+  - 동반 객체(companion object)
+  - 무명 객체(anonymous object)
+
+### 4.4.1 객체 선언: 싱글턴을 쉽게 만들기
+
+- **객체 선언**
+  - `클래스 선언`과 그 클래스에 속한 `단일 인스턴스의 선언`을 합친 선언
+  - `object` 키워드로 시작하여, 클래스를 정의하고 그 클래스의 인스턴스를 만들어 변수에 저장하는 모든 작업을 한 문장으로 처리
+  - 객체 선언 시 생성자 사용 X (주 생성자, 부 생성자 모두)
+  - 객체 선언에 클래스, 인터페이스 상속 가능
+  - 클래스 안에서 객체 선언을 할 수도 있음
+    ```kotlin
+    // 클래스 안에서 객체 선언을 하는 경우
+    data class Person(val name: String) {
+        object NameComparator : Comparator<Person> {
+            override fun compare(p1: Person, p2: Person): Int =
+                p1.name.compareTo(p2.name)      
+        }
+    }
+    ```
 
 ### 4.4.2 동반 객체: 팩토리 메서드와 정적 멤버가 들어갈 장소
 
