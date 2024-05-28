@@ -1,8 +1,8 @@
 package donggi.example.article.service
 
 import donggi.example.article.controller.dto.ArticleCreateRequest
-import donggi.example.article.domain.Article
-import donggi.example.article.repository.ArticleRepository
+import donggi.example.domain.Article
+import donggi.example.domain.ArticleRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,8 +13,7 @@ class ArticleService(
     @Transactional
     fun create(request: ArticleCreateRequest) =
         articleRepository.save(
-            Article(
-                title = request.title
+            Article(request.title
             )
         )
 }
