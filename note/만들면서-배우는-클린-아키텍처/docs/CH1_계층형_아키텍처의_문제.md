@@ -1,4 +1,4 @@
-# 계층형 아키텍처의 문제
+# 1. 계층형 아키텍처의 문제
 
 - 전통적인 웹 애플리케이션 구조인 3-tier architecture  
   <img src="images/img.png" width="200px"/>
