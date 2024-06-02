@@ -13,8 +13,7 @@ class ArticleService(
     @Transactional
     fun create(request: ArticleCreateRequest) =
         articleRepository.save(
-            Article(
-                title = request.title
+            Article(request.title
             )
         )
 }

@@ -78,4 +78,16 @@ buckpal
                 └── UpdateAccountStatePort
 ```
 
+- 최상위에 Account 와 관련된 유스케이스를 구현한 모듈임을 나타내는 account 패키지가 존재
+- application 패키지에 도메인 모델을 둘러싸는 서비스 계층이 포함하게 됨
+  - SendMoneyService 는 인커밍 포트 인터페이스인 SendMoneyUseCase 를 구현하고, 아웃고잉 포트 인터페이스이자 영속성 어댑터에 의해 구현된 LoadAccountPort와 UpdateAccountStatePort를 사용함  
+    -> 애플리케이션 계층이 인커밍 / 아웃고잉 어댑터 의존성을 갖지 않음(어댑터와 포트를 통해 통신)
+- adapter 패키지에는 애플리케이션 계층의 인커밍 포트를 호출하는 인커밍 어댑터와 아웃고잉 포트에 대한 구현을 제공하는 아웃고잉 어댑터를 포함
 
+<br></br>
+
+**아키텍처-코드 갭(architecture-code gap) 혹은 [모델-코드 갭(model-code gap)](https://www.georgefairbanks.com/software-architecture/model-code-gap/)**
+
+- 아키텍처적으로 표현력 있는 패키지 구조는 아키텍처-코드 갭 혹은 모델-코드 갭을 이야기할 수 있는 구조이다.
+- 소프트웨어 개발 프로젝트에서 아키텍처는 소스 코드에 직접적으로 매핑될 수 없는 추상적 개념이라는 사실을 보여줌
+  - 패키지 구조가 아키텍처를 반영할 수 없다면 코드는 점점 목표하던 아키텍처로부터 멀어지게 될 것임
