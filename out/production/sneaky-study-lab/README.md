@@ -1,5 +1,0 @@
-## Sneaky Study Lab
-
-<br/>
-
-👀
