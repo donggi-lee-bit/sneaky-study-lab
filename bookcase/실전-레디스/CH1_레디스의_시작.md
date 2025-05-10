@@ -137,3 +137,7 @@ Redis Inc는 Redis 8부터 AGPLv3를 추가하여 레디스 프로젝트를 다�
 
 [https://github.com/redis/redis](https://github.com/redis/redis)  
 [https://github.com/valkey-io/valkey](https://github.com/valkey-io/valkey)
+
+## 발표 자료
+
+[Google Drive 링크](https://docs.google.com/presentation/d/1KMIfukNUiUe038M5wevO53MFjVYG2EyDMFoh_Arjbdc/edit?usp=sharing)
