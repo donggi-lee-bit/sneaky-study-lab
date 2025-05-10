@@ -99,20 +99,41 @@ BASE는 다음 3가지 원칙으로 구성
 
 </br>
 
-## 레디스 서버 설정
-
-</br>
-
 ## 레디스 동작 테스트
+
+```bash
+# docker 실행된 상태 기반
+
+# 도커를 이용해 레디스 서버 실행
+➜ docker run -d --name redis-server -p 6379:6379 redis 
+
+# redis-cli로 redis-server 접속
+➜ docker exec -it redis-server redis-cli
+
+# redis 명령어 테스트
+127.0.0.1:6379> set foo bar
+OK
+127.0.0.1:6379> get foo
+"bar"
+127.0.0.1:6379> shutdown
+not connected>
+
+```
 
 </br>
 
 ## 레디스 라이센스 이슈
 
-- 최초의 BSD 라이센스
-  > BSD 라이센스란
-  > 1.	상업적 사용 허용
-  > 2.	소스 코드 수정 및 배포 허용
-  > 3.	라이선스 고지문 유지 의무
-  > 4.	책임의 부인
+레디스는 최초 BSD 라이센스로, 누구나 자유롭게 사용/수정/배포가 가능했음  
 
+Redis 7.2.4 이후, Redis를 개발하는 기업인 Redis Inc는 레디스 라이센스를 RSAL + SSPL 조합으로 변경  
+- 이로 인해 Redis를 Fork한 Valkey 프로젝트가 등장  
+
+Redis와 Valkey는 2024년 이후 서로 다른 방향으로 파편화되기 시작  
+Valkey는 기존 레디스의 오픈 소스 소프트웨어 철학을 이어감  
+
+Redis Inc는 Redis 8부터 AGPLv3를 추가하여 레디스 프로젝트를 다시 오픈 소스로 전환  
+- (AGPLv3는 사용 조건이 까다로운 오픈소스 라이센스라고 함)
+
+[https://github.com/redis/redis](https://github.com/redis/redis)  
+[https://github.com/valkey-io/valkey](https://github.com/valkey-io/valkey)
