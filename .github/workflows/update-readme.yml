@@ -1,0 +1,31 @@
+name: Update README with Directory Structure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install tree
+        run: sudo apt-get install -y tree
+
+      - name: Update README with directory structure
+        run: |
+          echo "# Project Structure" > README.md
+          echo "\`\`\`" >> README.md
+          tree -I '.git|.github|.idea|build|gradle|.gradle' >> README.md
+          echo "\`\`\`" >> README.md
+
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update README with directory structure" && git push) 
