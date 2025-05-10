@@ -22,9 +22,10 @@ jobs:
 
       - name: Update README with directory structure
         run: |
-          echo "# Project Structure" > README.md
+          echo "# sneaky study lab" > README.md
+          echo "" >> README.md
           echo "\`\`\`" >> README.md
-          tree -I '.git|.github|.idea|build|gradle|.gradle' >> README.md
+          tree -L 1 -I '.git|.github|.idea|build|gradle|.gradle|build.gradle.kts|gradlew|gradlew.bat|settings.gradle.kts|README.md' >> README.md
           echo "\`\`\`" >> README.md
 
       - name: Commit and push if changed
