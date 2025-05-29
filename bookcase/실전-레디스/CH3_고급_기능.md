@@ -14,3 +14,34 @@
 - 트랜잭션
 - 루아 스크립팅
 - 모듈
+
+## 3.2 루아
+
+레디스의 내장 스크립트 언어  
+레디스 명령어만으로 처리하기 어려운 조건 분기 등의 명령어를 원자적으로 처리할 수 있음  
+
+### EVAL vs EVALSHA
+
+루아 스크립트 실행 시 스크립트를 레디스에 어떻게 전달하는가의 차이가 있음  
+- EVAL : 루아 스크립트 코드를 직접 레디스에 전달하여 실행
+- EVALSHA : 스크립트의 SHA1 해시 값을 이용해서 실행 (스크립트는 이미 레디스에 로드되어 있어야함)
+
+1. EVAL 예시
+```
+EVAL "return ARGV[1]" 0 "hello"
+
+-> "hello"
+```
+
+2. EVALSHA 예시
+```
+# 1. EVAL로 스크립트를 먼저 로드하여 해시를 반환
+SCRIPT LOAD "return ARGV[1]"
+
+-> fd8f2b6e60c059c0f13c9a2ea3b71f5c1f8e14a4
+
+# 2. EVALSHA 실행
+EVALSHA fd8f2b6e60c059c0f13c9a2ea3b71f5c1f8e14a4 0 "hello"
+
+-> "hello"
+```
