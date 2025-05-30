@@ -45,3 +45,30 @@ EVALSHA fd8f2b6e60c059c0f13c9a2ea3b71f5c1f8e14a4 0 "hello"
 
 -> "hello"
 ```
+
+EVAL 명령어는 매번 루아 스크립트를 레디스 서버로 전송해야하기 때문에 오버헤드가 크다는 단점이 있음  
+
+하지만 스크립트 크기와 네트워크 대역폭 절약 효과가 크지 않을 경우 관리 비용을 절약하기 위해 EVAL 명령어를  
+사용하는 것도 하나의 전략이 될 수 있음  
+
+또한 EVALSHA 명령어는 해시값을 가지고 오기 위해 SCRIPT LOAD 명령어를 실행해야 하므로 레디스 서버와의 네트워크 통신 횟수가 증가하는 경향이 있음  
+
+따라서 통신 횟수를 줄이기 위해서 EVAL 명령어를 사용하는 경우도 있음
+
+### 스크립트 정지
+
+```bash
+# 스크립트 무한 반복 실행
+127.0.0.1:6379> EVAL 'redis.call("SET", KEYS[1], "bar"); while 1 do redis. debug("infinite loop") end' 1 foo
+
+# 레디스 서버 상태 확인
+127.0.0.1:6379> PING
+(error) BUSY Redis is busy running a script. You can only call SCRIPT KILL or SHUTDOWN NOSAVE.
+
+# 스크립트 강제 종료 시도 (이미 쓰기 연산이 수행되어 데이터셋이 변경되어 종료 불가)
+127.0.0.1:6379> script kill
+(error) UNKILLABLE Sorry the script already executed write commands against the dataset. You can either wait the script termination or kill the server in a hard way using the SHUTDOWN NOSAVE command.
+
+# 레디스 서버 강제 종료 (데이터 저장 없이 강제 종료)
+127.0.0.1:6379> shutdown nosave
+```
