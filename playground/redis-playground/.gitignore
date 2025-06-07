@@ -1,0 +1,36 @@
+# Python 가상환경
+myenv/
+venv/
+ENV/
+env/
+.venv/
+
+# Python 캐시 / 빌드 파일
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+
+# 환경 설정
+*.env
+.env.*
+
+# IDE 설정 (IntelliJ, PyCharm, VSCode 등)
+.idea/
+.vscode/
+*.iml
+
+# 로그 파일
+*.log
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 기타 백업 파일
+*.bak
+*.swp
+*.swo
