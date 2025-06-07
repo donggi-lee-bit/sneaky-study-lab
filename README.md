@@ -36,4 +36,7 @@
 │   ├── E20250314 Pinpoint 설치 가이드.md
 │   └── E20250402 SQL 트랜잭션과 락의 동작 방식.md
 └── playground
+    └── redis-playground
+        ├── __init__.py
+        └── stream-chat
 ```
