@@ -36,7 +36,8 @@
 │   ├── E20241225 테스트 시 Spring Security Context가 필요할 경우.md
 │   ├── E20241227 Elasticsearch 소개와 주소 검색이 처리되는 과정.md
 │   ├── E20250314 Pinpoint 설치 가이드.md
-│   └── E20250402 SQL 트랜잭션과 락의 동작 방식.md
+│   ├── E20250402 SQL 트랜잭션과 락의 동작 방식.md
+│   └── E20250817 MySQL InnoDB Log에 대한 이해 - (1).md
 └── playground
     └── redis-playground
         ├── __init__.py
